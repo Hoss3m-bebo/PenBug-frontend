@@ -1,0 +1,56 @@
+/* PenBug Color Palette - Dark Cyber Security Theme with Neon Red Accents */
+
+/* Primary Colors */
+:root {
+  --bg-primary: #0a0a0a; /* Deep black background */
+  --bg-secondary: #1a1a1a; /* Dark gray for cards/containers */
+  --bg-tertiary: #2a2a2a; /* Lighter gray for accents */
+
+  --text-primary: #ffffff; /* White text */
+  --text-secondary: #cccccc; /* Light gray text */
+  --text-muted: #888888; /* Muted gray text */
+
+  --accent-primary: #ff0000; /* Neon red */
+  --accent-secondary: #ff3333; /* Lighter red */
+  --accent-tertiary: #cc0000; /* Darker red */
+
+  --border-color: #333333; /* Subtle borders */
+  --shadow-color: rgba(255, 0, 0, 0.3); /* Red-tinted shadows */
+
+  --glass-bg: rgba(255, 255, 255, 0.1); /* Glass-morphism background */
+  --glass-border: rgba(255, 255, 255, 0.2); /* Glass-morphism border */
+  --glass-shadow: rgba(0, 0, 0, 0.5); /* Glass-morphism shadow */
+}
+
+/* Utility Classes */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-tertiary { background-color: var(--bg-tertiary); }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+.accent-primary { color: var(--accent-primary); }
+.accent-bg-primary { background-color: var(--accent-primary); }
+
+.border-accent { border-color: var(--accent-primary); }
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px var(--glass-shadow);
+}
+
+/* RTL Support */
+[dir="rtl"] .text-align-left { text-align: right; }
+[dir="rtl"] .text-align-right { text-align: left; }
+
+/* Responsive Breakpoints (for reference) */
+@media (max-width: 768px) {
+  /* Mobile adjustments */
+  .glass {
+    backdrop-filter: blur(5px);
+  }
+}

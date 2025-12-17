@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Company Dashboard</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="../assets/logo-primary.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="company-dashboard.html">Dashboard</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Login</a></li>
+                <li><a href="login.html" class="nav-login-btn">Login</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                <i class="fas fa-bell"></i>
+                <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Company Dashboard</h1>
+        <p>Manage your bug bounty program and monitor security findings.</p>
+
+        <div class="dashboard-stats grid grid-4">
+            <div class="card stat-card">
+                <h3>Active Submissions</h3>
+                <span class="stat-number accent-primary">47</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Total Paid</h3>
+                <span class="stat-number accent-primary">$127,500</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Avg Resolution Time</h3>
+                <span class="stat-number accent-primary">18h</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Critical Findings</h3>
+                <span class="stat-number accent-primary">8</span>
+            </div>
+        </div>
+
+        <section class="program-management">
+            <h2>Program Management</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>TechCorp Bug Bounty</h3>
+                    <p><strong>Status:</strong> <span class="accent-primary">Active</span></p>
+                    <p><strong>Submissions:</strong> 156</p>
+                    <p><strong>Total Paid:</strong> $89,200</p>
+                    <div class="actions">
+                        <button class="btn">Edit Program</button>
+                        <button class="btn btn-secondary">View Submissions</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>API Security Program</h3>
+                    <p><strong>Status:</strong> <span class="text-muted">Inactive</span></p>
+                    <p><strong>Submissions:</strong> 0</p>
+                    <p><strong>Total Paid:</strong> $0</p>
+                    <div class="actions">
+                        <button class="btn">Activate Program</button>
+                        <button class="btn btn-secondary">Configure</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                <div class="card activity-item">
+                    <div class="activity-header">
+                        <h4>Critical SQL Injection Accepted</h4>
+                        <span class="timestamp">2 hours ago</span>
+                    </div>
+                    <p>Reward: <strong class="accent-primary">$5,000</strong> | Researcher: @security_ninja</p>
+                    <p>AI Score: 9.4/10 | Manual Review: Approved</p>
+                </div>
+
+                <div class="card activity-item">
+                    <div class="activity-header">
+                        <h4>High XSS Vulnerability Accepted</h4>
+                        <span class="timestamp">4 hours ago</span>
+                    </div>
+                    <p>Reward: <strong class="accent-primary">$2,500</strong> | Researcher: @bug_hunter</p>
+                    <p>AI Score: 8.7/10 | Manual Review: Approved</p>
+                </div>
+
+                <div class="card activity-item">
+                    <div class="activity-header">
+                        <h4>Medium Config Issue Rejected</h4>
+                        <span class="timestamp">6 hours ago</span>
+                    </div>
+                    <p>Reward: <strong>$0</strong> | Researcher: @whitehat_jr</p>
+                    <p>AI Score: 5.2/10 | Manual Review: Duplicate issue</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="ai-insights card">
+            <h2>AI Security Insights</h2>
+            <div class="grid grid-2">
+                <div>
+                    <h3>Top Vulnerability Types</h3>
+                    <ul>
+                        <li>SQL Injection: 23%</li>
+                        <li>XSS: 18%</li>
+                        <li>Authentication Bypass: 15%</li>
+                        <li>Information Disclosure: 12%</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Recommendations</h3>
+                    <ul>
+                        <li>🔴 High Priority: Implement prepared statements for all database queries</li>
+                        <li>🟡 Medium Priority: Add CSP headers to prevent XSS</li>
+                        <li>🟢 Low Priority: Review API authentication mechanisms</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="reports card">
+            <h2>Generate Reports</h2>
+            <form class="grid grid-3">
+                <div class="form-group">
+                    <label for="report-type">Report Type</label>
+                    <select id="report-type">
+                        <option>Monthly Summary</option>
+                        <option>Vulnerability Trends</option>
+                        <option>Researcher Performance</option>
+                        <option>Financial Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date-range">Date Range</label>
+                    <select id="date-range">
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                        <option>Last 6 months</option>
+                        <option>Last year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Generate Report</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

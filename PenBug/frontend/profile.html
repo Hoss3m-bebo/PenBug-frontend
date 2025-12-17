@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Researcher Profile</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="../assets/logo-primary.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                <i class="fas fa-bell"></i>
+                <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Researcher Profile</h1>
+
+        <div class="profile-header card">
+            <div class="grid grid-2">
+                <div>
+                    <h2>John Doe</h2>
+                    <p>@johndoe_hacker</p>
+                    <p>Elite Researcher | 150+ Valid Submissions</p>
+                    <div class="stats">
+                        <span class="stat">Total Earnings: <strong class="accent-primary">$45,230</strong></span>
+                        <span class="stat">Reputation: <strong class="accent-primary">4.9/5</strong></span>
+                    </div>
+            </div>
+                <div class="profile-actions">
+                <button class="btn">Edit Profile</button>
+                <button class="btn btn-secondary">View Public Profile</button>
+                 <a href="login.html" class="btn logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="stats-overview grid grid-4">
+            <div class="card stat-card">
+                <h3>Total Submissions</h3>
+                <span class="stat-number accent-primary">178</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Accepted</h3>
+                <span class="stat-number accent-primary">150</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Pending</h3>
+                <span class="stat-number accent-primary">12</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Rejected</h3>
+                <span class="stat-number accent-primary">16</span>
+            </div>
+        </section>
+
+        <section class="recent-submissions">
+            <h2>Recent Submissions</h2>
+            <div class="submissions-list">
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>SQL Injection in API Endpoint</h3>
+                        <span class="status accepted">Accepted</span>
+                        <span class="reward accent-primary">$3,500</span>
+                    </div>
+                    <p><strong>Program:</strong> TechCorp</p>
+                    <p><strong>Submitted:</strong> 3 days ago</p>
+                    <p><strong>AI Score:</strong> 9.1/10</p>
+                </div>
+
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>XSS in Admin Panel</h3>
+                        <span class="status accepted">Accepted</span>
+                        <span class="reward accent-primary">$1,200</span>
+                    </div>
+                    <p><strong>Program:</strong> FinanceSecure</p>
+                    <p><strong>Submitted:</strong> 1 week ago</p>
+                    <p><strong>AI Score:</strong> 8.5/10</p>
+                </div>
+
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>Weak Encryption</h3>
+                        <span class="status pending">Pending Review</span>
+                        <span class="reward accent-primary">TBD</span>
+                    </div>
+                    <p><strong>Program:</strong> HealthData Inc.</p>
+                    <p><strong>Submitted:</strong> 2 days ago</p>
+                    <p><strong>AI Score:</strong> 7.2/10</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="achievements">
+            <h2>Achievements</h2>
+            <div class="grid grid-3">
+                <div class="card achievement">
+                    <h3>🏆 Elite Researcher</h3>
+                    <p>Submitted 100+ valid vulnerabilities</p>
+                </div>
+                <div class="card achievement">
+                    <h3>💎 Critical Finder</h3>
+                    <p>Discovered 20+ critical vulnerabilities</p>
+                </div>
+                <div class="card achievement">
+                    <h3>⚡ Fast Responder</h3>
+                    <p>Average response time under 24 hours</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="settings card">
+            <h2>Account Settings</h2>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="john.doe@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="notifications">Email Notifications</label>
+                    <select id="notifications">
+                        <option>All updates</option>
+                        <option>Important only</option>
+                        <option>None</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language">
+                        <option>English</option>
+                        <option>العربية (Arabic)</option>
+                        <option>Español</option>
+                        <option>Français</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Save Settings</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

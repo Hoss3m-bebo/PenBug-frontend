@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Manual Triage Dashboard</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="../assets/logo-primary.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                 <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                <i class="fas fa-bell"></i>
+                <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Manual Triage Dashboard</h1>
+        <p>Review AI-analyzed submissions and make final decisions.</p>
+
+        <div class="dashboard-stats grid grid-4">
+            <div class="card stat-card">
+                <h3>Pending Review</h3>
+                <span class="stat-number accent-primary">24</span>
+            </div>
+            <div class="card stat-card">
+                <h3>AI Approved</h3>
+                <span class="stat-number accent-primary">156</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Rejected</h3>
+                <span class="stat-number accent-primary">12</span>
+            </div>
+            <div class="card stat-card">
+                <h3>Avg Response Time</h3>
+                <span class="stat-number accent-primary">2.3h</span>
+            </div>
+        </div>
+
+        <section class="submissions-queue">
+            <h2>Submissions Queue</h2>
+
+            <div class="filters card">
+                <form class="grid grid-4">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option>All</option>
+                            <option>AI Approved</option>
+                            <option>Needs Review</option>
+                            <option>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="severity">Severity</label>
+                        <select id="severity">
+                            <option>All</option>
+                            <option>Critical</option>
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="program">Program</label>
+                        <select id="program">
+                            <option>All Programs</option>
+                            <option>TechCorp</option>
+                            <option>FinanceSecure</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn">Filter</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="submissions-list">
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>SQL Injection in User Registration</h3>
+                        <span class="severity critical">Critical</span>
+                        <span class="ai-score">AI Score: 9.2/10</span>
+                    </div>
+                    <p><strong>Program:</strong> TechCorp Bug Bounty</p>
+                    <p><strong>Submitted:</strong> 2 hours ago</p>
+                    <p><strong>AI Analysis:</strong> High-confidence SQL injection vulnerability with potential for data breach.</p>
+                    <div class="actions">
+                        <button class="btn">Approve & Reward $5,000</button>
+                        <button class="btn btn-secondary">Request More Info</button>
+                        <button class="btn btn-secondary">Reject</button>
+                    </div>
+                </div>
+
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>XSS in Comment System</h3>
+                        <span class="severity high">High</span>
+                        <span class="ai-score">AI Score: 8.7/10</span>
+                    </div>
+                    <p><strong>Program:</strong> E-Shop Global</p>
+                    <p><strong>Submitted:</strong> 4 hours ago</p>
+                    <p><strong>AI Analysis:</strong> Stored XSS vulnerability affecting user comments section.</p>
+                    <div class="actions">
+                        <button class="btn">Approve & Reward $2,500</button>
+                        <button class="btn btn-secondary">Request More Info</button>
+                        <button class="btn btn-secondary">Reject</button>
+                    </div>
+                </div>
+
+                <div class="card submission-item">
+                    <div class="submission-header">
+                        <h3>Weak Password Policy</h3>
+                        <span class="severity medium">Medium</span>
+                        <span class="ai-score">AI Score: 6.1/10</span>
+                    </div>
+                    <p><strong>Program:</strong> FinanceSecure</p>
+                    <p><strong>Submitted:</strong> 6 hours ago</p>
+                    <p><strong>AI Analysis:</strong> Password requirements below industry standards. Manual review recommended.</p>
+                    <div class="actions">
+                        <button class="btn">Approve & Reward $800</button>
+                        <button class="btn btn-secondary">Request More Info</button>
+                        <button class="btn btn-secondary">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ai-suggestions card">
+            <h2>AI Suggestions</h2>
+            <ul>
+                <li><strong>Bulk Action:</strong> Approve all high-confidence critical vulnerabilities (AI Score > 9.0)</li>
+                <li><strong>Pattern Detected:</strong> Multiple SQL injection attempts on TechCorp API endpoints</li>
+                <li><strong>Recommendation:</strong> Increase rewards for API-related vulnerabilities</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

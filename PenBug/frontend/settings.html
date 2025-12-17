@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Account Settings</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Settings Specific Styles */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        
+        .settings-sidebar {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+        
+        .settings-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .settings-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .settings-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-nav a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .settings-nav a.active {
+            background: var(--accent-primary);
+            color: black;
+            font-weight: bold;
+        }
+        
+        .settings-content {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 2rem;
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-form {
+            max-width: 600px;
+        }
+        
+        .danger-zone {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--accent-danger);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .danger-zone h3 {
+            color: var(--accent-danger);
+            margin-bottom: 1rem;
+        }
+        
+        .two-factor-setup {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid #00ff9d;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .two-factor-setup h3 {
+            color: #00ff9d;
+            margin-bottom: 1rem;
+        }
+        
+        .api-keys-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .api-key-item {
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .api-key-value {
+            font-family: 'Courier New', monospace;
+            color: var(--accent-primary);
+            letter-spacing: 1px;
+        }
+        
+        .sessions-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .session-item {
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .session-current {
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .preference-item {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .security-log {
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .security-log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .security-log-details {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .security-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .security-status.secure {
+            color: #00ff9d;
+        }
+        
+        .security-status.warning {
+            color: #ffcc00;
+        }
+        
+        .security-status.danger {
+            color: var(--accent-danger);
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-sidebar {
+                position: sticky;
+                top: 1rem;
+                z-index: 10;
+            }
+            
+            .settings-nav {
+                display: flex;
+                overflow-x: auto;
+                gap: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+            
+            .settings-nav li {
+                margin-bottom: 0;
+            }
+            
+            .settings-nav a {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="settings.html" class="nav-login-btn">
+                    <i class="fas fa-cog"></i> Settings
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div style="margin-bottom: 2rem;">
+            <h1>Account Settings</h1>
+            <p class="text-secondary">Manage your PenBug account preferences and security</p>
+        </div>
+
+        <div class="settings-container">
+            <!-- Settings Sidebar -->
+            <div class="settings-sidebar">
+                <ul class="settings-nav">
+                    <li>
+                        <a href="#profile" class="settings-nav-link active" data-section="profile">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#security" class="settings-nav-link" data-section="security">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Security</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#notifications" class="settings-nav-link" data-section="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#privacy" class="settings-nav-link" data-section="privacy">
+                            <i class="fas fa-lock"></i>
+                            <span>Privacy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#api" class="settings-nav-link" data-section="api">
+                            <i class="fas fa-code"></i>
+                            <span>API Keys</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#billing" class="settings-nav-link" data-section="billing">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#preferences" class="settings-nav-link" data-section="preferences">
+                            <i class="fas fa-sliders-h"></i>
+                            <span>Preferences</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#sessions" class="settings-nav-link" data-section="sessions">
+                            <i class="fas fa-desktop"></i>
+                            <span>Sessions</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- Profile Section -->
+                <div class="settings-section active" id="profile-section">
+                    <div class="settings-header">
+                        <h2>Profile Settings</h2>
+                        <span class="security-status secure">
+                            <i class="fas fa-check-circle"></i> Profile complete
+                        </span>
+                    </div>
+                    
+                    <form class="settings-form" id="profileForm">
+                        <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label for="profileFirstName">First Name</label>
+                                <input type="text" id="profileFirstName" value="John">
+                            </div>
+                            <div class="form-group">
+                                <label for="profileLastName">Last Name</label>
+                                <input type="text" id="profileLastName" value="Doe">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="profileDisplayName">Display Name</label>
+                            <input type="text" id="profileDisplayName" value="john_doe" required>
+                            <small class="text-muted">This is your public username</small>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="profileEmail">Email Address</label>
+                            <input type="email" id="profileEmail" value="john.doe@example.com" required>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="profileBio">Bio</label>
+                            <textarea id="profileBio" rows="4">Security researcher specializing in web application vulnerabilities. 5+ years experience in bug bounty programs.</textarea>
+                            <small class="text-muted">Brief description about yourself (max 200 characters)</small>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="profileLocation">Location</label>
+                            <input type="text" id="profileLocation" value="San Francisco, CA">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="profileWebsite">Website</label>
+                            <input type="url" id="profileWebsite" placeholder="https://yourwebsite.com">
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label>Profile Picture</label>
+                            <div style="display: flex; align-items: center; gap: 1.5rem; margin-top: 0.5rem;">
+                                <div style="width: 80px; height: 80px; background: var(--accent-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: white;">JD</div>
+                                <div style="flex: 1;">
+                                    <input type="file" id="profilePicture" accept="image/*" style="margin-bottom: 0.5rem;">
+                                    <small class="text-muted">JPG or PNG, max 2MB. Recommended: 400x400 pixels</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn">Save Profile Changes</button>
+                    </form>
+                </div>
+
+                <!-- Security Section -->
+                <div class="settings-section" id="security-section">
+                    <div class="settings-header">
+                        <h2>Security Settings</h2>
+                        <span class="security-status secure">
+                            <i class="fas fa-shield-alt"></i> Security strong
+                        </span>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <!-- Password Change -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Change Password</h3>
+                            <div class="grid grid-2" style="gap: 1rem; margin-top: 1rem;">
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" placeholder="Enter new password">
+                                </div>
+                            </div>
+                            <button class="btn" style="margin-top: 1rem;" id="changePasswordBtn">Change Password</button>
+                        </div>
+                        
+                        <!-- Two-Factor Authentication -->
+                        <div class="two-factor-setup">
+                            <h3>
+                                <i class="fas fa-mobile-alt"></i> Two-Factor Authentication
+                            </h3>
+                            <p style="margin-bottom: 1rem;">Add an extra layer of security to your account.</p>
+                            
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: #00ff9d; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-check" style="color: black;"></i>
+                                </div>
+                                <div>
+                                    <strong>2FA is enabled</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Authenticator app (Google Authenticator)</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-secondary">Manage 2FA</button>
+                                <button class="btn" style="background: var(--accent-danger);">Disable 2FA</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Log -->
+                        <div style="margin-top: 2rem;">
+                            <h3>Security Log</h3>
+                            <p class="text-muted">Recent security events on your account</p>
+                            
+                            <div class="sessions-list" style="margin-top: 1rem;">
+                                <div class="security-log">
+                                    <div class="security-log-header">
+                                        <strong>Password changed</strong>
+                                        <span class="text-muted" style="font-size: 0.875rem;">2 hours ago</span>
+                                    </div>
+                                    <div class="security-log-details">
+                                        From IP: 192.168.1.1 • Location: San Francisco, US
+                                    </div>
+                                </div>
+                                
+                                <div class="security-log">
+                                    <div class="security-log-header">
+                                        <strong>New login</strong>
+                                        <span class="text-muted" style="font-size: 0.875rem;">1 day ago</span>
+                                    </div>
+                                    <div class="security-log-details">
+                                        Chrome on Windows • IP: 192.168.1.100
+                                    </div>
+                                </div>
+                                
+                                <div class="security-log">
+                                    <div class="security-log-header">
+                                        <strong>API key created</strong>
+                                        <span class="text-muted" style="font-size: 0.875rem;">3 days ago</span>
+                                    </div>
+                                    <div class="security-log-details">
+                                        Key: penbug_api_***** • Scope: Read only
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">View Full Security Log</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="settings-section" id="notifications-section">
+                    <div class="settings-header">
+                        <h2>Notification Settings</h2>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <div class="preferences-grid">
+                            <div class="preference-item">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fas fa-money-bill-wave"></i> Bounty Rewards
+                                </h4>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Email notifications</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Push notifications</span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fas fa-bug"></i> Submissions
+                                </h4>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Status updates</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Review requests</span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fas fa-shield-alt"></i> Security Alerts
+                                </h4>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Program scope changes</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Policy updates</span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <h4 style="margin-bottom: 1rem;">
+                                    <i class="fas fa-bullhorn"></i> Announcements
+                                </h4>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>New features</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Important updates</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 2rem;">
+                            <label for="notificationFrequency">Notification Frequency</label>
+                            <select id="notificationFrequency" style="margin-top: 0.5rem;">
+                                <option value="realtime">Real-time (Immediate)</option>
+                                <option value="hourly">Hourly digest</option>
+                                <option value="daily" selected>Daily digest</option>
+                                <option value="weekly">Weekly digest</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn" style="margin-top: 2rem;">Save Notification Settings</button>
+                    </div>
+                </div>
+
+                <!-- Privacy Section -->
+                <div class="settings-section" id="privacy-section">
+                    <div class="settings-header">
+                        <h2>Privacy Settings</h2>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Profile Visibility</h3>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 5px;">
+                                    <input type="radio" name="profileVisibility" checked>
+                                    <div>
+                                        <strong>Public</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                            Your profile is visible to everyone
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 5px;">
+                                    <input type="radio" name="profileVisibility">
+                                    <div>
+                                        <strong>Researchers Only</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                            Visible only to other researchers
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 5px;">
+                                    <input type="radio" name="profileVisibility">
+                                    <div>
+                                        <strong>Private</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                            Only you can see your profile
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Data Sharing</h3>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Show my earnings on leaderboard</span>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <input type="checkbox">
+                                    <span>Allow companies to contact me about private programs</span>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Share anonymous vulnerability data for research</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Data Export & Deletion</h3>
+                            <p class="text-muted" style="margin-bottom: 1rem;">Download your data or request account deletion</p>
+                            
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-secondary" id="exportDataBtn">
+                                    <i class="fas fa-download"></i> Export My Data
+                                </button>
+                                <button class="btn" style="background: var(--accent-danger);" id="deleteAccountBtn">
+                                    <i class="fas fa-trash"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="btn">Save Privacy Settings</button>
+                    </div>
+                </div>
+
+                <!-- API Keys Section -->
+                <div class="settings-section" id="api-section">
+                    <div class="settings-header">
+                        <h2>API Keys</h2>
+                        <button class="btn" id="createApiKeyBtn">
+                            <i class="fas fa-plus"></i> Create API Key
+                        </button>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <p class="text-muted" style="margin-bottom: 1.5rem;">
+                            API keys allow you to interact with PenBug programmatically. Keep them secure!
+                        </p>
+                        
+                        <div class="api-keys-list">
+                            <div class="api-key-item">
+                                <div>
+                                    <strong>penbug_api_*****1234</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                        Created: 2023-10-15 • Scope: Read only
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; margin-left: 0.5rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="api-key-item">
+                                <div>
+                                    <strong>penbug_api_*****5678</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                        Created: 2023-09-20 • Scope: Read & Write
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; margin-left: 0.5rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(255, 0, 0, 0.05); border: 1px solid var(--accent-primary); border-radius: 5px; padding: 1rem; margin-top: 2rem;">
+                            <h4 style="color: var(--accent-primary); margin-bottom: 0.5rem;">
+                                <i class="fas fa-exclamation-triangle"></i> Security Notice
+                            </h4>
+                            <p style="margin: 0; font-size: 0.9rem;">
+                                Never share your API keys. Anyone with your key can access your account.
+                                Rotate keys regularly and never commit them to public repositories.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Section -->
+                <div class="settings-section" id="billing-section">
+                    <div class="settings-header">
+                        <h2>Billing & Payments</h2>
+                        <span class="security-status secure">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Payment Methods</h3>
+                            <div style="margin-top: 1rem;">
+                                <div style="background: var(--bg-secondary); border-radius: 5px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <i class="fab fa-cc-paypal" style="font-size: 2rem; color: #003087;"></i>
+                                        <div>
+                                            <strong>PayPal</strong>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                                john.doe@example.com • Primary
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary">Edit</button>
+                                </div>
+                                
+                                <button class="btn">
+                                    <i class="fas fa-plus"></i> Add Payment Method
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Transaction History</h3>
+                            <div style="margin-top: 1rem;">
+                                <div style="background: var(--bg-secondary); border-radius: 5px; padding: 1rem; margin-bottom: 0.5rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <strong>TechCorp Bounty</strong>
+                                        <span class="accent-primary">+$3,500.00</span>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                        October 15, 2023 • Transaction ID: TXN_789012
+                                    </div>
+                                </div>
+                                
+                                <div style="background: var(--bg-secondary); border-radius: 5px; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <strong>FinanceSecure Bounty</strong>
+                                        <span class="accent-primary">+$1,200.00</span>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                        October 10, 2023 • Transaction ID: TXN_345678
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">View All Transactions</a>
+                        </div>
+                        
+                        <div>
+                            <h3>Tax Information</h3>
+                            <p class="text-muted" style="margin-bottom: 1rem;">
+                                Provide tax information for proper reporting
+                            </p>
+                            <button class="btn">
+                                <i class="fas fa-file-invoice"></i> Update Tax Information
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Section -->
+                <div class="settings-section" id="preferences-section">
+                    <div class="settings-header">
+                        <h2>Preferences</h2>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label for="language">Language</label>
+                                <select id="language">
+                                    <option value="en">English</option>
+                                    <option value="ar">العربية (Arabic)</option>
+                                    <option value="es">Español</option>
+                                    <option value="fr">Français</option>
+                                    <option value="de">Deutsch</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="UTC-8">Pacific Time (UTC-8)</option>
+                                    <option value="UTC-5" selected>Eastern Time (UTC-5)</option>
+                                    <option value="UTC+0">GMT (UTC+0)</option>
+                                    <option value="UTC+3">Saudi Arabia (UTC+3)</option>
+                                    <option value="UTC+5:30">India (UTC+5:30)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="currency">Currency</label>
+                            <select id="currency">
+                                <option value="USD" selected>US Dollar ($)</option>
+                                <option value="EUR">Euro (€)</option>
+                                <option value="GBP">British Pound (£)</option>
+                                <option value="SAR">Saudi Riyal (﷼)</option>
+                                <option value="AED">UAE Dirham (د.إ)</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Display Preferences</h3>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Show vulnerabilities by severity color</span>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <input type="checkbox">
+                                    <span>Compact view for submissions list</span>
+                                </label>
+                                
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Show AI confidence scores</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 2rem;">
+                            <h3>Theme</h3>
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <label style="flex: 1; text-align: center;">
+                                    <input type="radio" name="theme" checked style="display: none;">
+                                    <div style="padding: 1rem; background: #0a0a0a; border: 2px solid var(--accent-primary); border-radius: 5px; cursor: pointer;">
+                                        <div style="color: var(--accent-primary); margin-bottom: 0.5rem;">
+                                            <i class="fas fa-moon"></i>
+                                        </div>
+                                        <div>Dark</div>
+                                    </div>
+                                </label>
+                                
+                                <label style="flex: 1; text-align: center;">
+                                    <input type="radio" name="theme" style="display: none;">
+                                    <div style="padding: 1rem; background: #ffffff; border: 2px solid var(--border-color); border-radius: 5px; cursor: pointer;">
+                                        <div style="color: #000000; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-sun"></i>
+                                        </div>
+                                        <div>Light</div>
+                                    </div>
+                                </label>
+                                
+                                <label style="flex: 1; text-align: center;">
+                                    <input type="radio" name="theme" style="display: none;">
+                                    <div style="padding: 1rem; background: #0a0a0f; border: 2px solid var(--border-color); border-radius: 5px; cursor: pointer;">
+                                        <div style="color: var(--accent-primary); margin-bottom: 0.5rem;">
+                                            <i class="fas fa-desktop"></i>
+                                        </div>
+                                        <div>System</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn">Save Preferences</button>
+                    </div>
+                </div>
+
+                <!-- Sessions Section -->
+                <div class="settings-section" id="sessions-section">
+                    <div class="settings-header">
+                        <h2>Active Sessions</h2>
+                        <button class="btn" style="background: var(--accent-danger);" id="logoutAllBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout All Devices
+                        </button>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <p class="text-muted" style="margin-bottom: 1.5rem;">
+                            These are the devices that are currently logged into your account.
+                            If you see any unfamiliar sessions, log them out immediately.
+                        </p>
+                        
+                        <div class="sessions-list">
+                            <div class="session-item session-current">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="color: var(--accent-primary); font-size: 1.5rem;">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Chrome on Windows</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            Current session • San Francisco, US
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="accent-primary">Active now</span>
+                                </div>
+                            </div>
+                            
+                            <div class="session-item">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="color: var(--text-secondary); font-size: 1.5rem;">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Safari on iPhone</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            Last active: 2 hours ago • San Francisco, US
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary">Logout</button>
+                            </div>
+                            
+                            <div class="session-item">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="color: var(--text-secondary); font-size: 1.5rem;">
+                                        <i class="fas fa-laptop"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Firefox on Mac</strong>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            Last active: 3 days ago • New York, US
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary">Logout</button>
+                            </div>
+                        </div>
+                        
+                        <div class="danger-zone" style="margin-top: 3rem;">
+                            <h3>
+                                <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                            </h3>
+                            <p style="margin-bottom: 1rem;">
+                                Logging out all devices will sign you out everywhere except this device.
+                                You'll need to log in again on other devices.
+                            </p>
+                            <button class="btn" style="background: var(--accent-danger);" id="logoutOtherBtn">
+                                Logout All Other Devices
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation between settings sections
+            const navLinks = document.querySelectorAll('.settings-nav-link');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    document.getElementById(sectionId).classList.add('active');
+                });
+            });
+            
+            // Change password
+            document.getElementById('changePasswordBtn').addEventListener('click', function() {
+                const current = document.getElementById('currentPassword').value;
+                const newPass = document.getElementById('newPassword').value;
+                
+                if (!current || !newPass) {
+                    alert('Please fill in both password fields.');
+                    return;
+                }
+                
+                if (newPass.length < 8) {
+                    alert('New password must be at least 8 characters long.');
+                    return;
+                }
+                
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Changing...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Password changed successfully!');
+                    this.innerHTML = 'Change Password';
+                    this.disabled = false;
+                    
+                    // Clear fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                }, 1500);
+            });
+            
+            // Create API key
+            document.getElementById('createApiKeyBtn').addEventListener('click', function() {
+                const keyName = prompt('Enter a name for this API key:');
+                if (!keyName) return;
+                
+                const scopes = ['read', 'write', 'delete'];
+                const selectedScopes = [];
+                
+                scopes.forEach(scope => {
+                    if (confirm(`Allow ${scope} access?`)) {
+                        selectedScopes.push(scope);
+                    }
+                });
+                
+                if (selectedScopes.length === 0) {
+                    alert('You must select at least one scope.');
+                    return;
+                }
+                
+                // Generate mock API key
+                const mockKey = 'penbug_api_' + Math.random().toString(36).substr(2, 16);
+                
+                alert(`API key created!\n\nKey: ${mockKey}\nName: ${keyName}\nScopes: ${selectedScopes.join(', ')}\n\nIMPORTANT: Copy this key now. It won't be shown again.`);
+                
+                // In real app, this would add the key to the list
+            });
+            
+            // Export data
+            document.getElementById('exportDataBtn').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing export...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Your data export has been prepared. You will receive an email with download instructions within 24 hours.');
+                    this.innerHTML = '<i class="fas fa-download"></i> Export My Data';
+                    this.disabled = false;
+                }, 2000);
+            });
+            
+            // Delete account
+            document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.\n\nAll your data will be permanently deleted.')) {
+                    const confirmText = prompt('Type "DELETE" to confirm account deletion:');
+                    
+                    if (confirmText === 'DELETE') {
+                        alert('Account deletion scheduled. You will receive a confirmation email. Your account will be deleted in 7 days.');
+                    } else {
+                        alert('Account deletion cancelled.');
+                    }
+                }
+            });
+            
+            // Logout all devices
+            document.getElementById('logoutAllBtn').addEventListener('click', function() {
+                if (confirm('Log out from all devices? You will need to log in again on all devices.')) {
+                    alert('Logged out from all devices. You will remain logged in on this device.');
+                }
+            });
+            
+            // Logout other devices
+            document.getElementById('logoutOtherBtn').addEventListener('click', function() {
+                if (confirm('Log out from all other devices? You will remain logged in on this device.')) {
+                    alert('Logged out from all other devices.');
+                }
+            });
+            
+            // Form submissions
+            document.querySelectorAll('.settings-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        const originalText = submitBtn.textContent;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                        submitBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            alert('Settings saved successfully!');
+                            submitBtn.textContent = originalText;
+                            submitBtn.disabled = false;
+                        }, 1000);
+                    }
+                });
+            });
+            
+            // Copy API key buttons
+            document.querySelectorAll('.fa-copy').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const key = this.closest('.api-key-item').querySelector('strong').textContent;
+                    navigator.clipboard.writeText(key).then(() => {
+                        alert('API key copied to clipboard!');
+                    });
+                });
+            });
+            
+            // Delete API key buttons
+            document.querySelectorAll('.fa-trash').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    if (confirm('Delete this API key? This action cannot be undone.')) {
+                        const keyItem = this.closest('.api-key-item');
+                        keyItem.style.opacity = '0.5';
+                        setTimeout(() => {
+                            keyItem.remove();
+                        }, 300);
+                    }
+                });
+            });
+            
+            // Theme selection
+            document.querySelectorAll('input[name="theme"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const theme = this.closest('label').querySelector('div div').textContent;
+                    alert(`Theme changed to ${theme}. Page will refresh to apply changes.`);
+                    // In real app, this would save the preference and refresh
+                });
+            });
+            
+            // Logout session buttons
+            document.querySelectorAll('.session-item .btn').forEach(button => {
+                if (button.textContent === 'Logout') {
+                    button.addEventListener('click', function() {
+                        const session = this.closest('.session-item');
+                        const device = session.querySelector('strong').textContent;
+                        
+                        if (confirm(`Log out from ${device}?`)) {
+                            session.style.opacity = '0.5';
+                            setTimeout(() => {
+                                session.remove();
+                            }, 300);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

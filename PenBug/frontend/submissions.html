@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Submissions</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="../assets/logo-primary.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                <i class="fas fa-bell"></i>
+                <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Submit Vulnerability</h1>
+        <p>Report a security vulnerability to earn bounties.</p>
+
+        <form class="submission-form card">
+            <h2>Vulnerability Details</h2>
+
+            <div class="form-group">
+                <label for="program">Select Program</label>
+                <select id="program" required>
+                    <option value="">Choose a program...</option>
+                    <option value="techcorp">TechCorp Bug Bounty</option>
+                    <option value="financesecure">FinanceSecure</option>
+                    <option value="healthdata">HealthData Inc.</option>
+                    <option value="eshop">E-Shop Global</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Vulnerability Title</label>
+                <input type="text" id="title" placeholder="e.g., SQL Injection in Login Form" required>
+            </div>
+
+            <div class="form-group">
+                <label for="severity">Severity</label>
+                <select id="severity" required>
+                    <option value="">Select severity...</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                    <option value="info">Informational</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" rows="6" placeholder="Detailed description of the vulnerability, including steps to reproduce..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="impact">Impact</label>
+                <textarea id="impact" rows="4" placeholder="Describe the potential impact of this vulnerability..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="poc">Proof of Concept</label>
+                <textarea id="poc" rows="4" placeholder="Provide code, screenshots, or detailed steps for proof of concept..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="attachments">Attachments (optional)</label>
+                <input type="file" id="attachments" multiple accept=".png,.jpg,.jpeg,.gif,.pdf,.txt">
+                <small>Screenshots, logs, or other evidence files</small>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" required> I confirm this is a legitimate vulnerability report and I have not disclosed it elsewhere.
+                </label>
+            </div>
+
+            <button type="submit" class="btn">Submit Vulnerability</button>
+        </form>
+
+        <section class="ai-notice card">
+            <h3>AI-Powered Analysis</h3>
+            <p>Your submission will be automatically analyzed by our Black-Box AI system for initial triage and validation. You'll receive an AI-generated assessment within minutes.</p>
+        </section>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

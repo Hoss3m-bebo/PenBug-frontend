@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Notifications</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Notifications Specific Styles */
+        .notification-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .notification-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .notification-item.unread {
+            background: rgba(255, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        [dir="rtl"] .notification-item.unread {
+            border-left: none;
+            border-right: 4px solid var(--accent-primary);
+        }
+        
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .icon-success { background: rgba(0, 255, 157, 0.1); color: #00ff9d; }
+        .icon-warning { background: rgba(255, 204, 0, 0.1); color: #ffcc00; }
+        .icon-danger { background: rgba(255, 51, 102, 0.1); color: #ff3366; }
+        .icon-info { background: rgba(0, 204, 255, 0.1); color: #00ccff; }
+        .icon-money { background: rgba(0, 255, 0, 0.1); color: #00ff00; }
+        .icon-security { background: rgba(255, 0, 0, 0.1); color: var(--accent-primary); }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .notification-time {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+        
+        .notification-message {
+            margin: 0;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .notification-actions .btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }
+        
+        [dir="rtl"] .notification-badge {
+            right: auto;
+            left: 1rem;
+        }
+        
+        .notification-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .notification-filters .btn {
+            padding: 0.5rem 1rem;
+        }
+        
+        .notification-filters .btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .notification-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .stat-box:hover .stat-number,
+        .stat-box:hover .stat-label {
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+        
+        .mark-all-read {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        [dir="rtl"] .mark-all-read {
+            right: auto;
+            left: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .notification-item {
+                padding: 1rem;
+                flex-direction: column;
+            }
+            
+            .notification-icon {
+                align-self: flex-start;
+            }
+            
+            .notification-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .notification-time {
+                align-self: flex-start;
+            }
+            
+            .mark-all-read {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                width: calc(100% - 2rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1>Notifications</h1>
+                <p class="text-secondary">Stay updated with your bug bounty activities</p>
+            </div>
+            <div>
+                <button id="settingsBtn" class="btn btn-secondary">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="notification-stats">
+            <div class="stat-box">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Unread</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">3</span>
+                <span class="stat-label">Today</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">47</span>
+                <span class="stat-label">This Week</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">156</span>
+                <span class="stat-label">Total</span>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="notification-filters">
+            <button class="btn active" data-filter="all">All</button>
+            <button class="btn" data-filter="unread">Unread</button>
+            <button class="btn" data-filter="rewards">Rewards</button>
+            <button class="btn" data-filter="submissions">Submissions</button>
+            <button class="btn" data-filter="security">Security Alerts</button>
+            <button class="btn" data-filter="system">System</button>
+            <button class="btn" data-filter="archived">Archived</button>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="card" style="padding: 0;">
+            <!-- Today Section -->
+            <div style="padding: 1.5rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color);">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-calendar-day"></i> Today
+                </h3>
+            </div>
+            
+            <!-- Notification 1: Reward Received -->
+            <div class="notification-item unread" data-type="rewards">
+                <div class="notification-badge"></div>
+                <div class="notification-icon icon-money">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Bounty Reward Received!</h4>
+                        <span class="notification-time">2 hours ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Your submission for <strong>"SQL Injection in User API"</strong> has been accepted and rewarded with <strong class="accent-primary">$3,500</strong>. The bounty has been transferred to your account.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Submission</button>
+                        <button class="btn btn-secondary">View Transaction</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 2: New Program -->
+            <div class="notification-item unread" data-type="security">
+                <div class="notification-badge"></div>
+                <div class="notification-icon icon-security">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">New Bug Bounty Program</h4>
+                        <span class="notification-time">4 hours ago</span>
+                    </div>
+                    <p class="notification-message">
+                        <strong>FinanceSecure Bank</strong> has launched a new bug bounty program with rewards up to <strong class="accent-primary">$50,000</strong> for critical vulnerabilities.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Program</button>
+                        <button class="btn btn-secondary">Save for Later</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 3: Submission Update -->
+            <div class="notification-item" data-type="submissions">
+                <div class="notification-icon icon-info">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Submission Under Review</h4>
+                        <span class="notification-time">6 hours ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Your submission <strong>"XSS in Admin Panel"</strong> for TechCorp is currently under manual review by our security team. Estimated response time: <strong>24-48 hours</strong>.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">Check Status</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yesterday Section -->
+            <div style="padding: 1.5rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); border-top: 1px solid var(--border-color);">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-calendar"></i> Yesterday
+                </h3>
+            </div>
+            
+            <!-- Notification 4: AI Analysis Complete -->
+            <div class="notification-item" data-type="system">
+                <div class="notification-icon icon-success">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">AI Analysis Complete</h4>
+                        <span class="notification-time">1 day ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Our Black-Box AI has completed analysis of your submission. <strong>Confidence Score: 8.7/10</strong>. The submission has been forwarded for manual review.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Analysis</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 5: Critical Alert -->
+            <div class="notification-item" data-type="security">
+                <div class="notification-icon icon-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Security Alert: Duplicate Submission</h4>
+                        <span class="notification-time">1 day ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Your submission for <strong>"CSRF in Payment Gateway"</strong> has been flagged as a duplicate. Another researcher reported this vulnerability 2 hours earlier.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Details</button>
+                        <button class="btn btn-secondary">Appeal Decision</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 6: Reputation Increase -->
+            <div class="notification-item" data-type="rewards">
+                <div class="notification-icon icon-success">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Reputation Increased</h4>
+                        <span class="notification-time">1 day ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Your researcher reputation has increased to <strong>4.9/5.0</strong> (+0.2) due to your recent high-quality submissions and fast response times.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Profile</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- This Week Section -->
+            <div style="padding: 1.5rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); border-top: 1px solid var(--border-color);">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-calendar-week"></i> This Week
+                </h3>
+            </div>
+            
+            <!-- Notification 7: New Feature -->
+            <div class="notification-item" data-type="system">
+                <div class="notification-icon icon-info">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">New Feature: AI-Powered Scanner</h4>
+                        <span class="notification-time">3 days ago</span>
+                    </div>
+                    <p class="notification-message">
+                        PenBug now includes an AI-powered vulnerability scanner! Test it out on eligible programs for automated scanning assistance.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">Learn More</button>
+                        <button class="btn btn-secondary">Try Scanner</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 8: Program Scope Changed -->
+            <div class="notification-item" data-type="security">
+                <div class="notification-icon icon-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Program Scope Updated</h4>
+                        <span class="notification-time">4 days ago</span>
+                    </div>
+                    <p class="notification-message">
+                        <strong>TechCorp Bug Bounty</strong> has updated their program scope. New domains added and reward amounts increased for API vulnerabilities.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Changes</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification 9: Leaderboard Achievement -->
+            <div class="notification-item" data-type="rewards">
+                <div class="notification-icon icon-success">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h4 class="notification-title">Top 10 Leaderboard!</h4>
+                        <span class="notification-time">5 days ago</span>
+                    </div>
+                    <p class="notification-message">
+                        Congratulations! You've entered the <strong>Top 10 Researchers</strong> on the PenBug leaderboard. Current rank: <strong class="accent-primary">#8</strong>.
+                    </p>
+                    <div class="notification-actions">
+                        <button class="btn">View Leaderboard</button>
+                        <button class="btn btn-secondary">Share Achievement</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State (Hidden by default) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-bell-slash"></i>
+                <h3>No Notifications</h3>
+                <p>You're all caught up! When you have new notifications, they'll appear here.</p>
+                <button class="btn" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+        
+        <!-- Load More -->
+        <div class="text-center" style="margin: 2rem 0;">
+            <button id="loadMoreBtn" class="btn btn-secondary">
+                <i class="fas fa-plus"></i> Load More Notifications
+            </button>
+        </div>
+        
+        <!-- Settings Modal (Hidden by default) -->
+        <div id="settingsModal" class="card" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; z-index: 1000;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Notification Settings</h2>
+                <button id="closeSettingsBtn" style="background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="notificationSettingsForm">
+                <div class="form-group">
+                    <label style="font-weight: bold; display: block; margin-bottom: 1rem;">Email Notifications</label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 5px;">
+                        <input type="checkbox" checked>
+                        <span>Bounty rewards and payments</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 5px;">
+                        <input type="checkbox" checked>
+                        <span>Submission status updates</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 5px;">
+                        <input type="checkbox">
+                        <span>New bug bounty programs</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 5px;">
+                        <input type="checkbox" checked>
+                        <span>Security alerts and updates</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: var(--bg-tertiary); border-radius: 5px;">
+                        <input type="checkbox">
+                        <span>Weekly digest and reports</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notificationFrequency" style="font-weight: bold;">Notification Frequency</label>
+                    <select id="notificationFrequency" style="margin-top: 0.5rem;">
+                        <option value="realtime">Real-time (Immediate)</option>
+                        <option value="hourly">Hourly Digest</option>
+                        <option value="daily" selected>Daily Digest</option>
+                        <option value="weekly">Weekly Digest</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label style="font-weight: bold; display: block; margin-bottom: 1rem;">Push Notifications</label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <input type="checkbox" checked>
+                        <span>Enable browser notifications</span>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox">
+                        <span>Desktop notifications</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label style="font-weight: bold;">Sound Alerts</label>
+                    <select style="margin-top: 0.5rem;">
+                        <option value="default">Default Sound</option>
+                        <option value="beep">Beep</option>
+                        <option value="chime">Chime</option>
+                        <option value="none" selected>No Sound</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn" style="flex: 1;">Save Settings</button>
+                    <button type="button" id="resetSettingsBtn" class="btn btn-secondary">Reset to Default</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Modal Overlay -->
+        <div id="modalOverlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+    </main>
+
+    <!-- Mark All as Read Button -->
+    <button id="markAllReadBtn" class="btn mark-all-read">
+        <i class="fas fa-check-double"></i> Mark All as Read
+    </button>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let notifications = document.querySelectorAll('.notification-item');
+            let unreadCount = document.querySelectorAll('.notification-item.unread').length;
+            
+            // Update badge count
+            function updateBadgeCount() {
+                const badge = document.querySelector('.nav-login-btn span');
+                if (badge) {
+                    badge.textContent = unreadCount;
+                    if (unreadCount === 0) {
+                        badge.style.display = 'none';
+                    } else {
+                        badge.style.display = 'inline-block';
+                    }
+                }
+            }
+            
+            // Mark notification as read
+            function markAsRead(notification) {
+                if (notification.classList.contains('unread')) {
+                    notification.classList.remove('unread');
+                    const badge = notification.querySelector('.notification-badge');
+                    if (badge) badge.style.display = 'none';
+                    unreadCount--;
+                    updateBadgeCount();
+                }
+            }
+            
+            // Mark all as read
+            document.getElementById('markAllReadBtn').addEventListener('click', function() {
+                notifications.forEach(notification => {
+                    markAsRead(notification);
+                });
+                this.innerHTML = '<i class="fas fa-check"></i> All Read';
+                this.disabled = true;
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check-double"></i> Mark All as Read';
+                    this.disabled = false;
+                }, 2000);
+            });
+            
+            // Click on notification
+            notifications.forEach(notification => {
+                notification.addEventListener('click', function(e) {
+                    if (!e.target.closest('.notification-actions')) {
+                        markAsRead(this);
+                        
+                        // Simulate opening notification
+                        const title = this.querySelector('.notification-title').textContent;
+                        console.log(`Opening notification: ${title}`);
+                        // In real app, this would navigate to relevant page
+                    }
+                });
+            });
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.notification-filters .btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    const emptyState = document.getElementById('emptyState');
+                    let visibleCount = 0;
+                    
+                    // Show/hide notifications based on filter
+                    notifications.forEach(notification => {
+                        const type = notification.getAttribute('data-type');
+                        
+                        if (filter === 'all' || filter === type) {
+                            notification.style.display = 'flex';
+                            visibleCount++;
+                        } else if (filter === 'unread') {
+                            if (notification.classList.contains('unread')) {
+                                notification.style.display = 'flex';
+                                visibleCount++;
+                            } else {
+                                notification.style.display = 'none';
+                            }
+                        } else if (filter === 'archived') {
+                            // In real app, this would show archived notifications
+                            notification.style.display = 'none';
+                        } else {
+                            notification.style.display = 'none';
+                        }
+                    });
+                    
+                    // Show empty state if no notifications match filter
+                    if (visibleCount === 0 && filter !== 'archived') {
+                        emptyState.style.display = 'block';
+                    } else {
+                        emptyState.style.display = 'none';
+                    }
+                    
+                    // Special case for archived (would show different empty state)
+                    if (filter === 'archived') {
+                        emptyState.innerHTML = `
+                            <i class="fas fa-archive"></i>
+                            <h3>No Archived Notifications</h3>
+                            <p>Notifications you archive will appear here.</p>
+                        `;
+                        emptyState.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Settings modal
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+            
+            settingsBtn.addEventListener('click', function() {
+                settingsModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeSettingsBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', closeModal);
+            
+            function closeModal() {
+                settingsModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Settings form submission
+            document.getElementById('notificationSettingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Notification settings saved successfully!');
+                closeModal();
+            });
+            
+            // Reset settings
+            document.getElementById('resetSettingsBtn').addEventListener('click', function() {
+                if (confirm('Reset all notification settings to default?')) {
+                    const checkboxes = this.form.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        if (checkbox.nextElementSibling.textContent.includes('Bounty rewards') ||
+                            checkbox.nextElementSibling.textContent.includes('Submission status') ||
+                            checkbox.nextElementSibling.textContent.includes('Security alerts')) {
+                            checkbox.checked = true;
+                        } else {
+                            checkbox.checked = false;
+                        }
+                    });
+                    
+                    document.getElementById('notificationFrequency').value = 'daily';
+                    alert('Settings reset to default.');
+                }
+            });
+            
+            // Load more button
+            document.getElementById('loadMoreBtn').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                this.disabled = true;
+                
+                // Simulate loading more notifications
+                setTimeout(() => {
+                    // In real app, this would fetch more notifications from API
+                    alert('Loading older notifications...');
+                    this.innerHTML = '<i class="fas fa-plus"></i> Load More Notifications';
+                    this.disabled = false;
+                }, 1500);
+            });
+            
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                
+                setTimeout(() => {
+                    location.reload(); // Simple refresh for demo
+                }, 1000);
+            });
+            
+            // Archive functionality (simulated)
+            document.querySelectorAll('.notification-actions .btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent marking as read
+                    
+                    if (this.textContent.includes('Archive') || this.textContent.includes('Save')) {
+                        const notification = this.closest('.notification-item');
+                        notification.style.opacity = '0.5';
+                        setTimeout(() => {
+                            notification.style.display = 'none';
+                            alert('Notification archived.');
+                        }, 300);
+                    }
+                });
+            });
+            
+            // Initialize badge count
+            updateBadgeCount();
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Shift+M to mark all as read
+                if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                    e.preventDefault();
+                    document.getElementById('markAllReadBtn').click();
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape' && settingsModal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Register Company</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <div>
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+                <a href="login.html" class="btn">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="grid grid-2" style="align-items: center; gap: 3rem;">
+            <!-- Left Side: Benefits -->
+            <div class="card">
+                <h1 class="glow-text">Secure Your Company</h1>
+                <p class="text-secondary">Launch a bug bounty program and leverage global security talent.</p>
+                
+                <div class="benefits" style="margin: 2rem 0;">
+                    <div class="benefit-item" style="display: flex; align-items: start; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="color: var(--accent-primary); font-size: 1.5rem;">🛡️</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.5rem 0;">Continuous Security</h3>
+                            <p style="margin: 0;">24/7 security testing from global researchers.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" style="display: flex; align-items: start; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="color: var(--accent-primary); font-size: 1.5rem;">🤖</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.5rem 0;">AI-Powered Triage</h3>
+                            <p style="margin: 0;">Automated vulnerability analysis and filtering.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" style="display: flex; align-items: start; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="color: var(--accent-primary); font-size: 1.5rem;">💰</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.5rem 0;">Cost-Effective</h3>
+                            <p style="margin: 0;">Pay only for valid vulnerabilities found.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item" style="display: flex; align-items: start; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="color: var(--accent-primary); font-size: 1.5rem;">📊</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.5rem 0;">Detailed Reports</h3>
+                            <p style="margin: 0;">Compliance and executive reports.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pricing-preview" style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Simple Pricing</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Platform Fee</span>
+                        <strong>15% of bounties</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Minimum Deposit</span>
+                        <strong>$500</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Company Signup Form -->
+            <div class="card">
+                <h2>Register Company</h2>
+                
+                <!-- Social Login -->
+                <div class="social-login" style="margin-bottom: 2rem;">
+                    <p class="text-center text-muted" style="margin-bottom: 1rem;">Quick sign up with</p>
+                    <div class="social-buttons" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <button type="button" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fab fa-google"></i> Google Workspace
+                        </button>
+                        <button type="button" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fas fa-building"></i> Company Email
+                        </button>
+                    </div>
+                    <div class="divider" style="display: flex; align-items: center; margin: 1.5rem 0;">
+                        <hr style="flex: 1; border-color: var(--border-color);">
+                        <span class="text-muted" style="padding: 0 1rem;">OR</span>
+                        <hr style="flex: 1; border-color: var(--border-color);">
+                    </div>
+                </div>
+
+                <!-- Company Signup Form -->
+                <form id="companySignupForm">
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" placeholder="e.g., TechCorp Inc." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyEmail">Company Email *</label>
+                        <input type="email" id="companyEmail" placeholder="security@company.com" required>
+                        <small class="text-muted">Use your company email domain</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Company Website *</label>
+                        <input type="url" id="website" placeholder="https://company.com" required>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: 1rem;">
+                        <div class="form-group">
+                            <label for="industry">Industry *</label>
+                            <select id="industry" required>
+                                <option value="">Select industry</option>
+                                <option value="tech">Technology</option>
+                                <option value="finance">Finance/Banking</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="ecommerce">E-commerce</option>
+                                <option value="government">Government</option>
+                                <option value="education">Education</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="companySize">Company Size *</label>
+                            <select id="companySize" required>
+                                <option value="">Select size</option>
+                                <option value="1-10">1-10 employees</option>
+                                <option value="11-50">11-50 employees</option>
+                                <option value="51-200">51-200 employees</option>
+                                <option value="201-500">201-500 employees</option>
+                                <option value="501-1000">501-1000 employees</option>
+                                <option value="1000+">1000+ employees</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactName">Contact Person Name *</label>
+                        <input type="text" id="contactName" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactTitle">Contact Person Title *</label>
+                        <input type="text" id="contactTitle" placeholder="e.g., CISO, Security Lead" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPhone">Contact Phone</label>
+                        <input type="tel" id="contactPhone" placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Create Password *</label>
+                        <input type="password" id="password" placeholder="Strong company password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" placeholder="Repeat password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="securityTeam">Security Team Size</label>
+                        <select id="securityTeam">
+                            <option value="">Select team size</option>
+                            <option value="0">No dedicated security team</option>
+                            <option value="1-3">1-3 security engineers</option>
+                            <option value="4-10">4-10 security engineers</option>
+                            <option value="10+">10+ security engineers</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">Estimated Bug Bounty Budget (USD)</label>
+                        <select id="budget">
+                            <option value="">Select budget range</option>
+                            <option value="1000-5000">$1,000 - $5,000</option>
+                            <option value="5000-20000">$5,000 - $20,000</option>
+                            <option value="20000-50000">$20,000 - $50,000</option>
+                            <option value="50000+">$50,000+</option>
+                            <option value="unsure">Not sure yet</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" required>
+                            I agree to the <a href="#" style="color: var(--accent-primary);">Company Terms</a> and <a href="#" style="color: var(--accent-primary);">Service Agreement</a>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" required>
+                            I have authority to create a bug bounty program for my company
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-rocket"></i> Launch Company Program
+                    </button>
+                </form>
+
+                <p class="text-center" style="margin-top: 1.5rem;">
+                    Already have an account? <a href="login.html" style="color: var(--accent-primary);">Login here</a>
+                </p>
+                
+                <p class="text-center">
+                    Individual researcher? <a href="signup-researcher.html" style="color: var(--accent-primary);">Researcher Signup</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved. | <a href="#" style="color: var(--accent-primary);">Enterprise Agreement</a> | <a href="#" style="color: var(--accent-primary);">GDPR Compliance</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('companySignupForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate email domain
+                const companyEmail = document.getElementById('companyEmail').value;
+                const website = document.getElementById('website').value;
+                
+                // Simple domain validation
+                if (companyEmail && website) {
+                    const emailDomain = companyEmail.split('@')[1];
+                    const websiteDomain = website.replace(/https?:\/\/(www\.)?/, '').split('/')[0];
+                    
+                    if (!websiteDomain.includes(emailDomain)) {
+                        if (!confirm('Company email domain does not match website domain. Continue anyway?')) {
+                            return;
+                        }
+                    }
+                }
+                
+                // Validate passwords
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Setting up your program...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert('Company registration successful! Our team will contact you shortly.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Redirect to company dashboard
+                    window.location.href = 'company-dashboard.html';
+                }, 3000);
+            });
+            
+            // Social login buttons
+            document.querySelectorAll('.social-buttons button').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.textContent.includes('Google')) {
+                        alert('Redirecting to Google Workspace authentication...');
+                        // OAuth for Google Workspace
+                    } else {
+                        // Company email verification flow
+                        const companyEmail = prompt('Please enter your company email for verification:');
+                        if (companyEmail) {
+                            alert(`Verification email sent to ${companyEmail}. Please check your inbox.`);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

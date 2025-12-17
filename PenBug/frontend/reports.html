@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Security Reports</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+    <style>
+        /* Reports Specific Styles */
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .report-filters {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        
+        .reports-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .report-card {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .report-card:hover {
+            background: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .report-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .report-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .export-option {
+            flex: 1;
+            min-width: 150px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .export-option:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .export-option:hover .export-icon,
+        .export-option:hover .export-label {
+            color: white;
+        }
+        
+        .export-icon {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .export-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vulnerability-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .vulnerability-table th,
+        .vulnerability-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .vulnerability-table th {
+            background: var(--bg-tertiary);
+            font-weight: bold;
+        }
+        
+        .vulnerability-table tr:hover {
+            background: rgba(255, 0, 0, 0.05);
+        }
+        
+        .severity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        
+        .severity-dot.critical { background: var(--accent-primary); }
+        .severity-dot.high { background: #ff6600; }
+        .severity-dot.medium { background: #ffcc00; }
+        .severity-dot.low { background: #00ccff; }
+        
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .report-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .export-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="company-dashboard.html">Company Dashboard</a></li>
+                <li><a href="reports.html" class="nav-login-btn">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="reports-header">
+            <div>
+                <h1>Security Reports</h1>
+                <p class="text-secondary">Analytics and insights from your bug bounty program</p>
+            </div>
+            <button class="btn" id="generateReportBtn">
+                <i class="fas fa-plus"></i> Generate New Report
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="report-filters">
+            <div class="grid grid-4" style="gap: 1rem;">
+                <div class="form-group">
+                    <label for="reportPeriod">Time Period</label>
+                    <select id="reportPeriod">
+                        <option value="last-30">Last 30 Days</option>
+                        <option value="last-90">Last 90 Days</option>
+                        <option value="last-year">Last Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="programFilter">Program</label>
+                    <select id="programFilter">
+                        <option value="all">All Programs</option>
+                        <option value="techcorp">TechCorp</option>
+                        <option value="financesecure">FinanceSecure</option>
+                        <option value="healthdata">HealthData Inc.</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="severityFilter">Severity</label>
+                    <select id="severityFilter">
+                        <option value="all">All Severities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn" style="margin-top: 1.5rem;">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="stat-number accent-primary">47</div>
+                <div class="stat-label">Total Vulnerabilities</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-number accent-primary">$127,500</div>
+                <div class="stat-label">Total Bounties Paid</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number accent-primary">18h</div>
+                <div class="stat-label">Avg. Response Time</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="stat-number accent-primary">8</div>
+                <div class="stat-label">Critical Findings</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>Vulnerabilities by Type</h3>
+                <canvas id="vulnTypeChart" height="250"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Bounties Over Time</h3>
+                <canvas id="bountiesChart" height="250"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Researcher Performance</h3>
+                <canvas id="researcherChart" height="250"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Response Times</h3>
+                <canvas id="responseChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Vulnerability Details Table -->
+        <div class="card">
+            <h3>Vulnerability Details</h3>
+            <table class="vulnerability-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vulnerability</th>
+                        <th>Severity</th>
+                        <th>Researcher</th>
+                        <th>Bounty</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#001</td>
+                        <td>SQL Injection in API</td>
+                        <td>
+                            <span class="severity-dot critical"></span>
+                            Critical
+                        </td>
+                        <td>@john_doe</td>
+                        <td class="accent-primary">$5,000</td>
+                        <td>2023-10-15</td>
+                        <td><span class="status accepted">Fixed</span></td>
+                    </tr>
+                    <tr>
+                        <td>#002</td>
+                        <td>XSS in Admin Panel</td>
+                        <td>
+                            <span class="severity-dot high"></span>
+                            High
+                        </td>
+                        <td>@security_raven</td>
+                        <td class="accent-primary">$2,500</td>
+                        <td>2023-10-14</td>
+                        <td><span class="status accepted">Fixed</span></td>
+                    </tr>
+                    <tr>
+                        <td>#003</td>
+                        <td>CSRF in Payment</td>
+                        <td>
+                            <span class="severity-dot high"></span>
+                            High
+                        </td>
+                        <td>@bug_hunter</td>
+                        <td class="accent-primary">$1,800</td>
+                        <td>2023-10-12</td>
+                        <td><span class="status pending">In Progress</span></td>
+                    </tr>
+                    <tr>
+                        <td>#004</td>
+                        <td>Information Disclosure</td>
+                        <td>
+                            <span class="severity-dot medium"></span>
+                            Medium
+                        </td>
+                        <td>@zero_cool</td>
+                        <td class="accent-primary">$800</td>
+                        <td>2023-10-10</td>
+                        <td><span class="status accepted">Fixed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Generated Reports -->
+        <div style="margin-top: 3rem;">
+            <h2>Generated Reports</h2>
+            <div class="reports-list">
+                <div class="report-card">
+                    <div class="report-header">
+                        <div>
+                            <h3 style="margin: 0;">Monthly Security Report - October 2023</h3>
+                            <p style="margin: 0; color: var(--text-muted);">Comprehensive analysis of all vulnerabilities and bounties</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn">
+                                <i class="fas fa-download"></i> PDF
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="report-meta">
+                        <div class="report-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Generated: 2023-11-01</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>25 pages</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-bug"></i>
+                            <span>12 vulnerabilities covered</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-header">
+                        <div>
+                            <h3 style="margin: 0;">Executive Summary - Q3 2023</h3>
+                            <p style="margin: 0; color: var(--text-muted);">High-level overview for management and stakeholders</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn">
+                                <i class="fas fa-download"></i> PPT
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="report-meta">
+                        <div class="report-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Generated: 2023-10-01</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>15 slides</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Trends and insights</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-header">
+                        <div>
+                            <h3 style="margin: 0;">Compliance Report - PCI DSS</h3>
+                            <p style="margin: 0; color: var(--text-muted);">Audit report for compliance requirements</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn">
+                                <i class="fas fa-download"></i> PDF
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="report-meta">
+                        <div class="report-meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Generated: 2023-09-15</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>42 pages</span>
+                        </div>
+                        <div class="report-meta-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Compliance checklist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div style="margin-top: 3rem;">
+            <h2>Export Reports</h2>
+            <div class="export-options">
+                <div class="export-option" data-format="pdf">
+                    <div class="export-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="export-label">PDF Report</div>
+                    <div class="text-muted">High-quality printable report</div>
+                </div>
+                
+                <div class="export-option" data-format="excel">
+                    <div class="export-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <div class="export-label">Excel Data</div>
+                    <div class="text-muted">Raw data for analysis</div>
+                </div>
+                
+                <div class="export-option" data-format="csv">
+                    <div class="export-icon">
+                        <i class="fas fa-file-csv"></i>
+                    </div>
+                    <div class="export-label">CSV Export</div>
+                    <div class="text-muted">Comma-separated values</div>
+                </div>
+                
+                <div class="export-option" data-format="json">
+                    <div class="export-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="export-label">JSON API</div>
+                    <div class="text-muted">API-ready JSON data</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts
+            const vulnTypeCtx = document.getElementById('vulnTypeChart').getContext('2d');
+            const bountiesCtx = document.getElementById('bountiesChart').getContext('2d');
+            const researcherCtx = document.getElementById('researcherChart').getContext('2d');
+            const responseCtx = document.getElementById('responseChart').getContext('2d');
+            
+            // Chart 1: Vulnerabilities by Type
+            new Chart(vulnTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['SQL Injection', 'XSS', 'CSRF', 'RCE', 'Auth Bypass', 'Others'],
+                    datasets: [{
+                        data: [12, 8, 6, 3, 5, 13],
+                        backgroundColor: [
+                            '#ff0000',
+                            '#ff3333',
+                            '#ff6666',
+                            '#ff9999',
+                            '#ffcccc',
+                            '#333333'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart 2: Bounties Over Time
+            new Chart(bountiesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Bounties Paid ($)',
+                        data: [5000, 8000, 12000, 7500, 15000, 22000, 18000, 25000, 19000, 12750],
+                        borderColor: '#ff0000',
+                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart 3: Researcher Performance
+            new Chart(researcherCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['@john_doe', '@security_raven', '@bug_hunter', '@zero_cool', '@whitehat_jr'],
+                    datasets: [{
+                        label: 'Bounties Earned ($)',
+                        data: [45000, 32000, 28000, 21000, 15000],
+                        backgroundColor: '#ff0000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart 4: Response Times
+            new Chart(responseCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+                    datasets: [{
+                        label: 'Response Time (hours)',
+                        data: [4, 8, 24, 48, 72],
+                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                        borderColor: '#ff0000',
+                        pointBackgroundColor: '#ff0000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#ffffff'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Generate new report
+            document.getElementById('generateReportBtn').addEventListener('click', function() {
+                const reportTypes = [
+                    {name: 'Monthly Security Report', desc: 'Comprehensive monthly analysis'},
+                    {name: 'Executive Summary', desc: 'High-level overview for management'},
+                    {name: 'Compliance Report', desc: 'Audit report for regulatory compliance'},
+                    {name: 'Researcher Performance', desc: 'Analysis of researcher contributions'},
+                    {name: 'Vulnerability Trends', desc: 'Trend analysis over time'}
+                ];
+                
+                let optionsHtml = reportTypes.map((type, index) => `
+                    <option value="${index}">${type.name} - ${type.desc}</option>
+                `).join('');
+                
+                const reportType = prompt(`Select report type:\n\n${reportTypes.map((t, i) => `${i+1}. ${t.name} - ${t.desc}`).join('\n')}\n\nEnter number (1-5):`);
+                
+                if (reportType && reportType >= 1 && reportType <= 5) {
+                    const selected = reportTypes[reportType - 1];
+                    const period = prompt('Enter time period (e.g., "October 2023", "Q3 2023"):');
+                    
+                    if (period) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                        this.disabled = true;
+                        
+                        setTimeout(() => {
+                            alert(`Report generated successfully!\n\nType: ${selected.name}\nPeriod: ${period}\n\nThe report has been added to your reports list.`);
+                            this.innerHTML = '<i class="fas fa-plus"></i> Generate New Report';
+                            this.disabled = false;
+                        }, 2000);
+                    }
+                }
+            });
+            
+            // Export options
+            document.querySelectorAll('.export-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const format = this.getAttribute('data-format').toUpperCase();
+                    
+                    this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Preparing ${format}...`;
+                    
+                    setTimeout(() => {
+                        alert(`${format} export ready! Your download will begin shortly.`);
+                        this.innerHTML = `
+                            <div class="export-icon">
+                                <i class="fas fa-file-${format === 'PDF' ? 'pdf' : format === 'EXCEL' ? 'excel' : format === 'CSV' ? 'csv' : 'code'}"></i>
+                            </div>
+                            <div class="export-label">${format} ${format === 'JSON' ? 'API' : format === 'CSV' ? 'Export' : 'Report'}</div>
+                            <div class="text-muted">${format === 'PDF' ? 'High-quality printable report' : format === 'EXCEL' ? 'Raw data for analysis' : format === 'CSV' ? 'Comma-separated values' : 'API-ready JSON data'}</div>
+                        `;
+                    }, 1500);
+                });
+            });
+            
+            // Download buttons
+            document.querySelectorAll('.report-actions .btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.querySelector('i').className.includes('download') ? 'download' : 'view';
+                    const format = this.textContent.includes('PDF') ? 'PDF' : 'PPT';
+                    const reportTitle = this.closest('.report-card').querySelector('h3').textContent;
+                    
+                    if (action === 'download') {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+                        setTimeout(() => {
+                            alert(`${format} download started: ${reportTitle}`);
+                            this.innerHTML = `<i class="fas fa-download"></i> ${format}`;
+                        }, 1000);
+                    } else {
+                        alert(`Viewing report: ${reportTitle}`);
+                    }
+                });
+            });
+            
+            // Filter changes
+            document.getElementById('reportPeriod').addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    const fromDate = prompt('Enter start date (YYYY-MM-DD):');
+                    const toDate = prompt('Enter end date (YYYY-MM-DD):');
+                    
+                    if (fromDate && toDate) {
+                        alert(`Custom range selected: ${fromDate} to ${toDate}`);
+                    } else {
+                        this.value = 'last-30';
+                    }
+                }
+            });
+            
+            // Apply filters
+            document.querySelector('.report-filters .btn').addEventListener('click', function() {
+                const period = document.getElementById('reportPeriod').value;
+                const program = document.getElementById('programFilter').value;
+                const severity = document.getElementById('severityFilter').value;
+                
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    alert(`Filters applied:\nPeriod: ${period}\nProgram: ${program}\nSeverity: ${severity}`);
+                    this.innerHTML = 'Apply Filters';
+                    this.disabled = false;
+                }, 1000);
+            });
+            
+            // Table row click
+            document.querySelectorAll('.vulnerability-table tbody tr').forEach(row => {
+                row.addEventListener('click', function() {
+                    const vulnId = this.cells[0].textContent;
+                    const vulnName = this.cells[1].textContent;
+                    alert(`Viewing details for: ${vulnName} (${vulnId})`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

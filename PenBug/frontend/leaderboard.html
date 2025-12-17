@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Top Researchers</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Leaderboard Specific Styles */
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: black; }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: black; }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); color: white; }
+        .rank-other { background: var(--bg-tertiary); color: var(--text-secondary); }
+        
+        .researcher-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .researcher-card:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(5px);
+        }
+        
+        .researcher-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .researcher-info {
+            flex: 1;
+        }
+        
+        .researcher-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .trophy-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .time-filter .btn {
+            padding: 0.5rem 1rem;
+        }
+        
+        .time-filter .btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .category-card {
+            min-width: 200px;
+            padding: 1.5rem;
+            text-align: center;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .category-card:hover h3,
+        .category-card:hover .stat-value {
+            color: white;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .achievement-badge {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        
+        .achievement-icon {
+            font-size: 2rem;
+        }
+        
+        .country-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html" class="nav-login-btn">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="login.html" class="nav-login-btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="hero text-center" style="padding: 3rem 0;">
+            <h1 class="glow-text">
+                <i class="fas fa-trophy trophy-icon"></i>
+                Top Security Researchers
+            </h1>
+            <p class="text-secondary">Recognizing excellence in vulnerability discovery and responsible disclosure</p>
+        </div>
+
+        <!-- Time Filters -->
+        <div class="time-filter">
+            <button class="btn active" data-period="all-time">All Time</button>
+            <button class="btn" data-period="monthly">This Month</button>
+            <button class="btn" data-period="weekly">This Week</button>
+            <button class="btn" data-period="yearly">This Year</button>
+        </div>
+
+        <!-- Top 3 Researchers -->
+        <section class="top-three card" style="margin-bottom: 3rem;">
+            <h2 style="text-align: center; margin-bottom: 2rem;">
+                <i class="fas fa-crown" style="color: #FFD700; margin-right: 0.5rem;"></i>
+                Top Performers
+            </h2>
+            
+            <div class="grid grid-3" style="align-items: end;">
+                <!-- 2nd Place -->
+                <div class="text-center">
+                    <div class="rank-badge rank-2" style="margin: 0 auto 1rem;">2</div>
+                    <div class="researcher-avatar" style="margin: 0 auto 1rem; background: #C0C0C0;">SR</div>
+                    <h3>@security_raven</h3>
+                    <div class="text-muted" style="margin-bottom: 0.5rem;">
+                        <span class="country-flag" style="background: linear-gradient(to right, #006A4E 33%, #F42A41 33%, #F42A41 66%, #006A4E 66%);"></span>
+                        Bangladesh
+                    </div>
+                    <div class="stat-value">$89,450</div>
+                    <div class="stat-label">Total Earnings</div>
+                </div>
+                
+                <!-- 1st Place -->
+                <div class="text-center">
+                    <div class="rank-badge rank-1" style="margin: 0 auto 1rem; width: 50px; height: 50px; font-size: 1.5rem;">1</div>
+                    <div class="researcher-avatar" style="margin: 0 auto 1rem; width: 70px; height: 70px; font-size: 2rem; background: linear-gradient(135deg, #FFD700, #FFA500);">JD</div>
+                    <h2>@john_doe</h2>
+                    <div class="text-muted" style="margin-bottom: 0.5rem;">
+                        <span class="country-flag" style="background: #3C3B6E;"></span>
+                        United States
+                    </div>
+                    <div class="stat-value" style="font-size: 1.5rem;">$124,780</div>
+                    <div class="stat-label">Total Earnings</div>
+                    <div style="margin-top: 1rem;">
+                        <span class="severity critical" style="font-size: 0.7rem;">12 Critical</span>
+                        <span class="severity high" style="font-size: 0.7rem;">34 High</span>
+                    </div>
+                </div>
+                
+                <!-- 3rd Place -->
+                <div class="text-center">
+                    <div class="rank-badge rank-3" style="margin: 0 auto 1rem;">3</div>
+                    <div class="researcher-avatar" style="margin: 0 auto 1rem; background: #CD7F32;">BH</div>
+                    <h3>@bug_hunter</h3>
+                    <div class="text-muted" style="margin-bottom: 0.5rem;">
+                        <span class="country-flag" style="background: #138808;"></span>
+                        India
+                    </div>
+                    <div class="stat-value">$67,890</div>
+                    <div class="stat-label">Total Earnings</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section style="margin-bottom: 3rem;">
+            <h2 style="margin-bottom: 1rem;">Top Categories</h2>
+            <div class="categories">
+                <div class="category-card">
+                    <h3>Most Critical Bugs</h3>
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">@zero_cool</div>
+                </div>
+                
+                <div class="category-card">
+                    <h3>Fastest Response</h3>
+                    <div class="stat-value">2.1h</div>
+                    <div class="stat-label">Avg. Response Time</div>
+                </div>
+                
+                <div class="category-card">
+                    <h3>Highest Bounty</h3>
+                    <div class="stat-value">$25,000</div>
+                    <div class="stat-label">Single Submission</div>
+                </div>
+                
+                <div class="category-card">
+                    <h3>Most Consistent</h3>
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Acceptance Rate</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full Leaderboard Table -->
+        <section class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Global Leaderboard</h2>
+                <div>
+                    <input type="text" placeholder="Search researchers..." style="padding: 0.75rem; border-radius: 5px; border: 1px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-primary);">
+                </div>
+            </div>
+            
+            <!-- Table Headers -->
+            <div style="display: grid; grid-template-columns: 50px 2fr 1fr 1fr 1fr 1fr; gap: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 5px; margin-bottom: 1rem; font-weight: bold;">
+                <div>Rank</div>
+                <div>Researcher</div>
+                <div>Earnings</div>
+                <div>Bugs Found</div>
+                <div>Acceptance Rate</div>
+                <div>Reputation</div>
+            </div>
+            
+            <!-- Leaderboard Rows -->
+            <div class="leaderboard-rows">
+                <!-- Row 4 -->
+                <div class="researcher-card">
+                    <div class="rank-badge rank-other">4</div>
+                    <div class="researcher-avatar" style="background: linear-gradient(135deg, #00ccff, #0099cc);">ZC</div>
+                    <div class="researcher-info">
+                        <h3 style="margin: 0 0 0.25rem 0;">@zero_cool</h3>
+                        <div class="text-muted">
+                            <i class="fas fa-map-marker-alt" style="margin-right: 0.25rem;"></i>
+                            Germany • 5+ years experience
+                        </div>
+                        <div class="researcher-stats">
+                            <div class="stat-item">
+                                <span class="severity critical" style="font-size: 0.7rem;">8 Critical</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="severity high" style="font-size: 0.7rem;">15 High</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-weight: bold; color: var(--accent-primary);">$56,430</div>
+                    <div style="font-weight: bold;">127</div>
+                    <div>
+                        <span style="font-weight: bold; color: var(--accent-primary);">95%</span>
+                        <div style="width: 100px; height: 5px; background: var(--bg-tertiary); border-radius: 3px; margin-top: 0.25rem;">
+                            <div style="width: 95%; height: 100%; background: var(--accent-primary); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                            <i class="fas fa-star" style="color: #FFD700;"></i>
+                            <span style="font-weight: bold;">4.9</span>
+                        </div>
+                        <small class="text-muted">/ 5.0</small>
+                    </div>
+                </div>
+                
+                <!-- Row 5 -->
+                <div class="researcher-card">
+                    <div class="rank-badge rank-other">5</div>
+                    <div class="researcher-avatar" style="background: linear-gradient(135deg, #ff3366, #cc0000);">SN</div>
+                    <div class="researcher-info">
+                        <h3 style="margin: 0 0 0.25rem 0;">@security_ninja</h3>
+                        <div class="text-muted">
+                            <i class="fas fa-map-marker-alt" style="margin-right: 0.25rem;"></i>
+                            Japan • Specializes in Mobile
+                        </div>
+                        <div class="researcher-stats">
+                            <div class="stat-item">
+                                <span class="severity critical" style="font-size: 0.7rem;">6 Critical</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="severity high" style="font-size: 0.7rem;">22 High</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-weight: bold; color: var(--accent-primary);">$48,920</div>
+                    <div style="font-weight: bold;">98</div>
+                    <div>
+                        <span style="font-weight: bold; color: var(--accent-primary);">92%</span>
+                        <div style="width: 100px; height: 5px; background: var(--bg-tertiary); border-radius: 3px; margin-top: 0.25rem;">
+                            <div style="width: 92%; height: 100%; background: var(--accent-primary); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                            <i class="fas fa-star" style="color: #FFD700;"></i>
+                            <span style="font-weight: bold;">4.8</span>
+                        </div>
+                        <small class="text-muted">/ 5.0</small>
+                    </div>
+                </div>
+                
+                <!-- Add more rows similarly... -->
+                
+                <!-- Row 10 -->
+                <div class="researcher-card">
+                    <div class="rank-badge rank-other">10</div>
+                    <div class="researcher-avatar" style="background: linear-gradient(135deg, #9933ff, #6600cc);">WH</div>
+                    <div class="researcher-info">
+                        <h3 style="margin: 0 0 0.25rem 0;">@whitehat_jr</h3>
+                        <div class="text-muted">
+                            <i class="fas fa-map-marker-alt" style="margin-right: 0.25rem;"></i>
+                            Brazil • Rising Star
+                        </div>
+                        <div class="researcher-stats">
+                            <div class="stat-item">
+                                <span class="severity high" style="font-size: 0.7rem;">18 High</span>
+                            </div>
+                            <div class="stat-item">
+                                <span style="font-size: 0.7rem; color: var(--accent-primary);">Fast Learner</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-weight: bold; color: var(--accent-primary);">$23,450</div>
+                    <div style="font-weight: bold;">45</div>
+                    <div>
+                        <span style="font-weight: bold; color: var(--accent-primary);">88%</span>
+                        <div style="width: 100px; height: 5px; background: var(--bg-tertiary); border-radius: 3px; margin-top: 0.25rem;">
+                            <div style="width: 88%; height: 100%; background: var(--accent-primary); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                            <i class="fas fa-star" style="color: #FFD700;"></i>
+                            <span style="font-weight: bold;">4.5</span>
+                        </div>
+                        <small class="text-muted">/ 5.0</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div style="display: flex; justify-content: center; margin-top: 2rem; gap: 0.5rem;">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button class="btn active">1</button>
+                <button class="btn btn-secondary">2</button>
+                <button class="btn btn-secondary">3</button>
+                <span style="padding: 0.5rem 1rem;">...</span>
+                <button class="btn btn-secondary">10</button>
+                <button class="btn btn-secondary">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Recent Achievements -->
+        <section class="card" style="margin-top: 3rem;">
+            <h2 style="margin-bottom: 1rem;">
+                <i class="fas fa-award" style="color: var(--accent-primary); margin-right: 0.5rem;"></i>
+                Recent Achievements
+            </h2>
+            
+            <div class="achievements-grid">
+                <div class="achievement-badge">
+                    <div class="achievement-icon" style="color: #FFD700;">🏆</div>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0;">Elite Researcher</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">@john_doe reached 100 valid bugs</p>
+                    </div>
+                </div>
+                
+                <div class="achievement-badge">
+                    <div class="achievement-icon" style="color: #FF3366;">💎</div>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0;">Critical Finder</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">@security_raven found 10th critical bug</p>
+                    </div>
+                </div>
+                
+                <div class="achievement-badge">
+                    <div class="achievement-icon" style="color: #00CCFF;">⚡</div>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0;">Fast Responder</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">@zero_cool average response: 1.5h</p>
+                    </div>
+                </div>
+                
+                <div class="achievement-badge">
+                    <div class="achievement-icon" style="color: #00FF9D;">🚀</div>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0;">Rising Star</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">@whitehat_jr joined top 10</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="text-center" style="margin: 4rem 0;">
+            <h2>Ready to Join the Leaderboard?</h2>
+            <p class="text-secondary" style="margin-bottom: 2rem;">Start finding vulnerabilities and climb the ranks</p>
+            <a href="signup-researcher.html" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="fas fa-rocket"></i> Start Your Journey
+            </a>
+        </section>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved. | 
+            <a href="#" style="color: var(--accent-primary);">Hall of Fame</a> | 
+            <a href="#" style="color: var(--accent-primary);">Researcher Spotlight</a>
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Time filter buttons
+            const timeButtons = document.querySelectorAll('.time-filter .btn');
+            timeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    timeButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const period = this.getAttribute('data-period');
+                    alert(`Loading ${period} leaderboard data...`);
+                    // In real implementation, fetch data based on period
+                });
+            });
+            
+            // Category cards
+            const categoryCards = document.querySelectorAll('.category-card');
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.querySelector('h3').textContent;
+                    alert(`Filtering by: ${category}`);
+                    // In real implementation, filter leaderboard by category
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('input[placeholder="Search researchers..."]');
+            searchInput.addEventListener('input', debounce(function() {
+                const query = this.value;
+                if (query.length > 2) {
+                    console.log(`Searching for: ${query}`);
+                    // In real implementation, filter researchers
+                }
+            }, 300));
+            
+            // Pagination buttons
+            const pageButtons = document.querySelectorAll('.pagination .btn');
+            pageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.classList.contains('active')) {
+                        pageButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        alert(`Loading page...`);
+                    }
+                });
+            });
+            
+            // Debounce function for search
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+            
+            // Add animation to top 3 cards
+            const topCards = document.querySelectorAll('.top-three .text-center');
+            topCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+                card.style.animation = 'fadeInUp 0.6s ease forwards';
+            });
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .top-three .text-center {
+                    opacity: 0;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

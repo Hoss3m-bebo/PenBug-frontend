@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - PenBug</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/logo-primary.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .error-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .error-content {
+            max-width: 600px;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px var(--shadow-color);
+        }
+        
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .error-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .error-search {
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+        
+        .glitch {
+            animation: glitch 2s infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .terminal-effect {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--accent-primary);
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin: 2rem 0;
+            text-align: left;
+            position: relative;
+        }
+        
+        .terminal-effect::before {
+            content: '> ';
+            color: var(--accent-primary);
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            
+            .error-message {
+                font-size: 1.2rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .error-actions .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="login.html" class="nav-login-btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="error-container">
+            <div class="error-content">
+                <div class="error-code glitch">404</div>
+                
+                <div class="terminal-effect">
+                    <span class="accent-primary">error</span>: page_not_found.exe<br>
+                    <span class="accent-primary">status</span>: 404 - Not Found<br>
+                    <span class="accent-primary">message</span>: The requested resource could not be located<br>
+                    <span class="accent-primary">suggestion</span>: Check URL or return to safety<span class="blink">_</span>
+                </div>
+                
+                <h1 class="error-message">Page Not Found</h1>
+                
+                <p class="error-description">
+                    The page you're looking for seems to have been moved, deleted, or never existed. 
+                    It might have been eaten by our AI scanner or lost in cyberspace.
+                </p>
+                
+                <div class="error-search">
+                    <input type="text" placeholder="Search PenBug..." style="width: 100%; padding: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 5px; color: var(--text-primary);">
+                </div>
+                
+    <div class="error-actions">
+                <a href="index.html" class="btn">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>    
+                <a href="programs.html" class="btn btn-secondary">
+                    <i class="fas fa-bug"></i> Browse Programs
+                </a>
+                <a href="dashboard.html" class="btn btn-secondary">
+                    <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                </a>
+                <button onclick="history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </button>
+    </div>
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        If you believe this is an error, please 
+                        <a href="#" style="color: var(--accent-primary);">contact our support team</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Terminal typing effect
+            const terminal = document.querySelector('.terminal-effect');
+            const originalText = terminal.innerHTML;
+            
+            // Clear and retype for effect
+            setTimeout(() => {
+                terminal.innerHTML = '<span class="accent-primary">error</span>: page_not_found.exe<span class="blink">_</span>';
+                
+                const messages = [
+                    '<span class="accent-primary">status</span>: 404 - Not Found',
+                    '<span class="accent-primary">message</span>: The requested resource could not be located',
+                    '<span class="accent-primary">suggestion</span>: Check URL or return to safety'
+                ];
+                
+                let currentMessage = 0;
+                let currentChar = 0;
+                let typingInterval;
+                
+                function typeNext() {
+                    if (currentMessage < messages.length) {
+                        if (currentChar === 0) {
+                            terminal.innerHTML += '<br>';
+                        }
+                        
+                        if (currentChar < messages[currentMessage].length) {
+                            terminal.innerHTML = terminal.innerHTML.replace(/_$/, '') + messages[currentMessage].charAt(currentChar) + '<span class="blink">_</span>';
+                            currentChar++;
+                            typingInterval = setTimeout(typeNext, 30);
+                        } else {
+                            currentMessage++;
+                            currentChar = 0;
+                            setTimeout(typeNext, 500);
+                        }
+                    }
+                }
+                
+                setTimeout(typeNext, 1000);
+            }, 500);
+            
+            // Search functionality
+            const searchInput = document.querySelector('.error-search input');
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        // Simple search simulation
+                        const pages = ['programs', 'dashboard', 'profile', 'leaderboard', 'submissions'];
+                        const found = pages.find(page => page.includes(query.toLowerCase()));
+                        
+                        if (found) {
+                            alert(`Searching for "${query}"... Found: ${found}.html`);
+                            window.location.href = `${found}.html`;
+                        } else {
+                            alert(`No results found for "${query}". Try browsing our programs.`);
+                        }
+                    }
+                }
+            });
+            
+            // Glitch effect on hover
+            const glitchElement = document.querySelector('.glitch');
+            glitchElement.addEventListener('mouseover', function() {
+                this.style.animation = 'glitch 0.5s infinite';
+            });
+            
+            glitchElement.addEventListener('mouseout', function() {
+                this.style.animation = 'glitch 2s infinite';
+            });
+            
+            // Security scan effect
+            const scanLines = document.createElement('div');
+            scanLines.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                pointer-events: none;
+                z-index: 9999;
+                background: linear-gradient(transparent 50%, rgba(255, 0, 0, 0.05) 50%);
+                background-size: 100% 4px;
+                animation: scan 2s linear infinite;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes scan {
+                    0% { background-position: 0 0; }
+                    100% { background-position: 0 100%; }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(scanLines);
+            
+            // Remove scan effect after 3 seconds
+            setTimeout(() => {
+                scanLines.style.opacity = '0';
+                setTimeout(() => scanLines.remove(), 1000);
+            }, 3000);
+            
+            // Easter egg: Konami code
+            const konamiCode = [
+                'ArrowUp', 'ArrowUp', 
+                'ArrowDown', 'ArrowDown', 
+                'ArrowLeft', 'ArrowRight', 
+                'ArrowLeft', 'ArrowRight', 
+                'KeyB', 'KeyA'
+            ];
+            let konamiIndex = 0;
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.code === konamiCode[konamiIndex]) {
+                    konamiIndex++;
+                    if (konamiIndex === konamiCode.length) {
+                        // Konami code activated!
+                        document.body.style.animation = 'rainbow 2s linear infinite';
+                        const rainbowStyle = document.createElement('style');
+                        rainbowStyle.textContent = `
+                            @keyframes rainbow {
+                                0% { filter: hue-rotate(0deg); }
+                                100% { filter: hue-rotate(360deg); }
+                            }
+                        `;
+                        document.head.appendChild(rainbowStyle);
+                        
+                        setTimeout(() => {
+                            document.body.style.animation = '';
+                            rainbowStyle.remove();
+                        }, 5000);
+                        
+                        konamiIndex = 0;
+                    }
+                } else {
+                    konamiIndex = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

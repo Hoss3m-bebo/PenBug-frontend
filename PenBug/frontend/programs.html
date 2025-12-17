@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenBug - Programs Directory</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="../assets/logo-primary.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">PenBug</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="leaderboard.html">Leaderboard</a></li>
+                <li><a href="submissions.html">Submissions</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="notifications.html" class="nav-login-btn">
+                <i class="fas fa-bell"></i>
+                <span style="background: var(--accent-primary); color: white; padding: 0.1rem 0.4rem; border-radius: 50%; font-size: 0.7rem; margin-left: 0.25rem;">12</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Programs Directory</h1>
+        <p>Browse active bug bounty programs from companies worldwide.</p>
+
+        <div class="filters card">
+            <h3>Filter Programs</h3>
+            <form class="grid grid-4">
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry">
+                        <option>All Industries</option>
+                        <option>Technology</option>
+                        <option>Finance</option>
+                        <option>Healthcare</option>
+                        <option>E-commerce</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reward">Min Reward</label>
+                    <input type="number" id="reward" placeholder="$0">
+                </div>
+                <div class="form-group">
+                    <label for="severity">Severity</label>
+                    <select id="severity">
+                        <option>All</option>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="programs-list grid grid-2">
+            <div class="card program-card">
+                <h3>TechCorp Bug Bounty</h3>
+                <p>Web application security testing for our flagship product.</p>
+                <div class="program-details">
+                    <span class="reward accent-primary">$500 - $10,000</span>
+                    <span class="status">Active</span>
+                </div>
+                <a href="program-scope.html?id=1" class="btn">View Scope</a>
+            </div>
+
+            <div class="card program-card">
+                <h3>FinanceSecure</h3>
+                <p>Banking platform vulnerability assessment.</p>
+                <div class="program-details">
+                    <span class="reward accent-primary">$1,000 - $50,000</span>
+                    <span class="status">Active</span>
+                </div>
+                <a href="program-scope.html?id=2" class="btn">View Scope</a>
+            </div>
+
+            <div class="card program-card">
+                <h3>HealthData Inc.</h3>
+                <p>Medical records system security testing.</p>
+                <div class="program-details">
+                    <span class="reward accent-primary">$2,000 - $25,000</span>
+                    <span class="status">Active</span>
+                </div>
+                <a href="program-scope.html?id=3" class="btn">View Scope</a>
+            </div>
+
+            <div class="card program-card">
+                <h3>E-Shop Global</h3>
+                <p>E-commerce platform bug hunting.</p>
+                <div class="program-details">
+                    <span class="reward accent-primary">$100 - $5,000</span>
+                    <span class="status">Active</span>
+                </div>
+                <a href="program-scope.html?id=4" class="btn">View Scope</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer container text-center">
+        <p>&copy; 2023 PenBug. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
